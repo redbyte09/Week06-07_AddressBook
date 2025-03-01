@@ -39,13 +39,17 @@ public class AddressBookController {
     // Update an existing entry
     @PutMapping("/update/{id}")
     public ResponseEntity<AddressBook> updateEntry(@PathVariable Long id, @RequestBody AddressBookDTO newEntry) {
-        return ResponseEntity.ok(service.updateEntry(id, newEntry));
+        return service.updateEntry(id, newEntry)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Delete an entry
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteEntry(@PathVariable Long id) {
-        service.deleteEntry(id);
-        return ResponseEntity.ok().build();
+        if (service.deleteEntry(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

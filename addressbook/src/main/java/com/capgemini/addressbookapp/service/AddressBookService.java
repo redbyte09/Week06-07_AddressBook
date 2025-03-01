@@ -2,50 +2,49 @@ package com.capgemini.addressbookapp.service;
 
 import com.capgemini.addressbookapp.dto.AddressBookDTO;
 import com.capgemini.addressbookapp.model.AddressBook;
-import com.capgemini.addressbookapp.repository.AddressBookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AddressBookService {
 
-    @Autowired
-    private AddressBookRepository repository;
+    private final List<AddressBook> addressBookList = new ArrayList<>();
+    private final AtomicLong idCounter = new AtomicLong(1);  // To generate unique IDs
 
     // Create a new entry (DTO -> Entity)
     public AddressBook saveEntry(AddressBookDTO dto) {
-        AddressBook addressBook = new AddressBook(dto);
-        return repository.save(addressBook);
+        AddressBook newEntry = new AddressBook(idCounter.getAndIncrement(), dto);
+        addressBookList.add(newEntry);
+        return newEntry;
     }
 
     // Retrieve all entries
     public List<AddressBook> getAllEntries() {
-        return repository.findAll();
+        return addressBookList;
     }
 
     // Retrieve entry by ID
     public Optional<AddressBook> getEntryById(Long id) {
-        return repository.findById(id);
+        return addressBookList.stream().filter(entry -> entry.getId().equals(id)).findFirst();
     }
 
     // Update an existing entry
-    public AddressBook updateEntry(Long id, AddressBookDTO newEntry) {
-        return repository.findById(id)
-                .map(entry -> {
-                    entry.setName(newEntry.getName());
-                    entry.setPhoneNumber(newEntry.getPhoneNumber());
-                    entry.setEmail(newEntry.getEmail());
-                    entry.setAddress(newEntry.getAddress());
-                    return repository.save(entry);
-                })
-                .orElseThrow(() -> new RuntimeException("Entry not found"));
+    public Optional<AddressBook> updateEntry(Long id, AddressBookDTO newEntry) {
+        return getEntryById(id).map(entry -> {
+            entry.setName(newEntry.getName());
+            entry.setPhoneNumber(newEntry.getPhoneNumber());
+            entry.setEmail(newEntry.getEmail());
+            entry.setAddress(newEntry.getAddress());
+            return entry;
+        });
     }
 
     // Delete an entry by ID
-    public void deleteEntry(Long id) {
-        repository.deleteById(id);
+    public boolean deleteEntry(Long id) {
+        return addressBookList.removeIf(entry -> entry.getId().equals(id));
     }
 }

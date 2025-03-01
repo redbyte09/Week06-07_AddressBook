@@ -1,31 +1,26 @@
 package com.capgemini.addressbookapp.model;
 
 import com.capgemini.addressbookapp.dto.AddressBookDTO;
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "ADDRESSBOOK")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressBook {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String phoneNumber;
     private String email;
     private String address;
 
     // Convert DTO to Entity
-    public AddressBook(AddressBookDTO dto) {
+    public AddressBook(Long id, AddressBookDTO dto) {
+        this.id = id;
         this.name = dto.getName();
         this.phoneNumber = dto.getPhoneNumber();
         this.email = dto.getEmail();
         this.address = dto.getAddress();
-}
+    }
 }
