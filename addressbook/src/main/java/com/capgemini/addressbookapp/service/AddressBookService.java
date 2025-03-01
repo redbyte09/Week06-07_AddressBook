@@ -1,5 +1,6 @@
 package com.capgemini.addressbookapp.service;
 
+import com.capgemini.addressbookapp.dto.AddressBookDTO;
 import com.capgemini.addressbookapp.model.AddressBook;
 import com.capgemini.addressbookapp.repository.AddressBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,9 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository repository;
 
-    public AddressBook saveEntry(AddressBook addressBook) {
-        return repository.save(addressBook);
+    public AddressBook saveEntry(AddressBookDTO dto) {
+        AddressBook entry = new AddressBook(dto); // Convert DTO to Model
+        return repository.save(entry);
     }
 
     public List<AddressBook> getAllEntries() {
@@ -26,7 +28,7 @@ public class AddressBookService {
         return repository.findById(id);
     }
 
-    public AddressBook updateEntry(Long id, AddressBook newEntry) {
+    public AddressBook updateEntry(Long id, AddressBookDTO newEntry) {
         return repository.findById(id)
                 .map(entry -> {
                     entry.setName(newEntry.getName());
@@ -35,7 +37,7 @@ public class AddressBookService {
                     entry.setAddress(newEntry.getAddress());
                     return repository.save(entry);
                 })
-                .orElseThrow(() -> new RuntimeException("Entry not found"));
+                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + id));
     }
 
     public void deleteEntry(Long id) {

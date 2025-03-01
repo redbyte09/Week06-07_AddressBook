@@ -1,5 +1,6 @@
 package com.capgemini.addressbookapp.controller;
 
+import com.capgemini.addressbookapp.dto.AddressBookDTO;
 import com.capgemini.addressbookapp.model.AddressBook;
 import com.capgemini.addressbookapp.service.AddressBookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class AddressBookController {
     private AddressBookService service;
 
     @PostMapping("/add")
-    public ResponseEntity<AddressBook> addEntry(@RequestBody AddressBook addressBook) {
-        return ResponseEntity.ok(service.saveEntry(addressBook));
+    public ResponseEntity<AddressBook> addEntry(@RequestBody AddressBookDTO dto) {
+        return ResponseEntity.ok(service.saveEntry(dto));
     }
 
     @GetMapping("/all")
@@ -33,7 +34,7 @@ public class AddressBookController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<AddressBook> updateEntry(@PathVariable Long id, @RequestBody AddressBook newEntry) {
+    public ResponseEntity<AddressBook> updateEntry(@PathVariable Long id, @RequestBody AddressBookDTO newEntry) {
         return ResponseEntity.ok(service.updateEntry(id, newEntry));
     }
 
