@@ -15,19 +15,23 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository repository;
 
+    // Create a new entry (DTO -> Entity)
     public AddressBook saveEntry(AddressBookDTO dto) {
-        AddressBook entry = new AddressBook(dto); // Convert DTO to Model
-        return repository.save(entry);
+        AddressBook addressBook = new AddressBook(dto);
+        return repository.save(addressBook);
     }
 
+    // Retrieve all entries
     public List<AddressBook> getAllEntries() {
         return repository.findAll();
     }
 
+    // Retrieve entry by ID
     public Optional<AddressBook> getEntryById(Long id) {
         return repository.findById(id);
     }
 
+    // Update an existing entry
     public AddressBook updateEntry(Long id, AddressBookDTO newEntry) {
         return repository.findById(id)
                 .map(entry -> {
@@ -37,9 +41,10 @@ public class AddressBookService {
                     entry.setAddress(newEntry.getAddress());
                     return repository.save(entry);
                 })
-                .orElseThrow(() -> new RuntimeException("Entry not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Entry not found"));
     }
 
+    // Delete an entry by ID
     public void deleteEntry(Long id) {
         repository.deleteById(id);
     }

@@ -21,11 +21,11 @@ public class AddressBook {
     private String email;
     private String address;
 
-    // Constructor to initialize from DTO
+    // Convert DTO to Entity
     public AddressBook(AddressBookDTO dto) {
         this.name = dto.getName();
         this.phoneNumber = dto.getPhoneNumber();
         this.email = dto.getEmail();
         this.address = dto.getAddress();
-    }
+}
 }
